@@ -23,6 +23,12 @@ cd backend
 pip install -r requirements.txt
 ```
 
+For production deployments on Render, make sure the backend start command uses Gunicorn:
+
+```bash
+gunicorn paybilis_backend.wsgi:application --bind 0.0.0.0:$PORT
+```
+
 Run migrations:
 
 ```bash
@@ -63,3 +69,17 @@ The frontend submits subscription data to:
 `POST /api/subscriptions/`
 
 Set `VITE_API_BASE_URL` in `frontend/.env` to point to your Django backend.
+
+## Deployment
+
+The frontend is a Vite app, so the production build output is `frontend/dist`.
+
+If you use Render Blueprint deploys, import the root `render.yaml` file instead of entering the build and publish fields manually.
+
+If you deploy the frontend on Render, use these settings:
+
+- Root directory: `frontend`
+- Build command: `npm install; npm run build`
+- Publish directory: `dist`
+
+The error `Publish directory npm run build does not exist!` means `npm run build` was entered in the publish directory field instead of the build command field.
