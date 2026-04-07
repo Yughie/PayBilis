@@ -79,7 +79,9 @@ If you use Render Blueprint deploys, import the root `render.yaml` file instead 
 If you deploy the frontend on Render, use these settings:
 
 - Root directory: `frontend`
-- Build command: `npm install; npm run build`
+- Build command: `npm run build`
 - Publish directory: `dist`
+
+Render installs the frontend dependencies automatically for static sites, so `npm install` does not belong in the publish directory or blueprint fields.
 
 The error `Publish directory npm run build does not exist!` means `npm run build` was entered in the publish directory field instead of the build command field.
