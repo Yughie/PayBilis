@@ -12,10 +12,21 @@ export async function createSubscription(payload: SubscriptionValues) {
   });
 
   if (!response.ok) {
-    const errorPayload = await response.json().catch(() => null);
+    const responseText = await response.text();
+    let errorPayload: Record<string, unknown> | null = null;
+
+    if (responseText) {
+      try {
+        errorPayload = JSON.parse(responseText) as Record<string, unknown>;
+      } catch {
+        errorPayload = null;
+      }
+    }
+
     const message =
-      errorPayload?.detail ||
-      errorPayload?.message ||
+      (typeof errorPayload?.detail === 'string' ? errorPayload.detail : null) ||
+      (typeof errorPayload?.message === 'string' ? errorPayload.message : null) ||
+      responseText ||
       (errorPayload ? JSON.stringify(errorPayload) : null) ||
       'Unable to submit subscription.';
     throw new Error(message);

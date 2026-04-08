@@ -170,7 +170,7 @@ export default function SubscriptionForm() {
         </div>
 
         {!submitted ? (
-          <form onSubmit={onSubmit} className="mt-8 space-y-6">
+          <form className="mt-8 space-y-6">
             {step === 0 && (
               <div className="grid gap-5 md:grid-cols-2">
                 <FormField
@@ -429,7 +429,11 @@ export default function SubscriptionForm() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
-                <Button type="submit" disabled={isSubmitting}>
+                <Button
+                  type="button"
+                  onClick={() => void onSubmit()}
+                  disabled={isSubmitting}
+                >
                   {t.form.submit}
                   <Sparkles className="ml-2 h-4 w-4" />
                 </Button>
