@@ -29,7 +29,7 @@ export default function BillSummaryCard({ values }: BillSummaryCardProps) {
   ];
 
   return (
-    <aside className="rounded-3xl border border-slate-200 bg-slate-950 p-6 text-white shadow-glow">
+    <aside className="rounded-3xl border border-white/20 bg-slate-950 p-6 text-white shadow-glow ring-1 ring-white/10">
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
         {t.summary.eyebrow}
       </p>
@@ -54,7 +54,7 @@ export default function BillSummaryCard({ values }: BillSummaryCardProps) {
         {rows.map(({ label, value, icon: Icon }) => (
           <div
             key={label}
-            className="flex items-start gap-3 rounded-2xl bg-white/5 p-4"
+            className="flex items-start gap-3 rounded-2xl border border-white/15 bg-white/5 p-4"
           >
             <div className="mt-0.5 rounded-xl bg-emerald-400/15 p-2 text-emerald-300">
               <Icon className="h-4 w-4" />
@@ -76,7 +76,7 @@ export default function BillSummaryCard({ values }: BillSummaryCardProps) {
         {values.billers.map((biller, index) => (
           <div
             key={`${biller.billerName}-${index}`}
-            className="rounded-2xl border border-white/10 bg-white/5 p-4"
+            className="rounded-2xl border border-white/20 bg-white/5 p-4"
           >
             <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
               {t.summary.billerLabel} {index + 1}

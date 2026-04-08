@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db import transaction
 
 from .models import Biller, Subscription
 
@@ -44,7 +45,10 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         billers_data = validated_data.pop('billers', [])
-        subscription = Subscription.objects.create(**validated_data)
-        for biller_data in billers_data:
-            Biller.objects.create(subscription=subscription, **biller_data)
+
+        with transaction.atomic():
+            subscription = Subscription.objects.create(**validated_data)
+            for biller_data in billers_data:
+                Biller.objects.create(subscription=subscription, **biller_data)
+
         return subscription

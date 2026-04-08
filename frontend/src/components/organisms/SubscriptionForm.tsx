@@ -115,7 +115,7 @@ export default function SubscriptionForm() {
       id="subscription-form"
       className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1.25fr_0.9fr] lg:px-8"
     >
-      <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="rounded-[2rem] border border-slate-300 bg-white p-6 shadow-sm shadow-slate-900/5 ring-1 ring-slate-900/5 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-green">
@@ -153,7 +153,7 @@ export default function SubscriptionForm() {
               return (
                 <div
                   key={item.title}
-                  className={`rounded-2xl border p-3 ${active ? "border-brand-green bg-emerald-50" : "border-slate-200 bg-slate-50"}`}
+                  className={`rounded-2xl border p-3 ring-1 ${active ? "border-brand-green bg-emerald-50 ring-emerald-200/60" : "border-slate-300 bg-slate-50 ring-slate-900/5"}`}
                 >
                   <div className="flex items-center gap-2">
                     <Icon
@@ -223,7 +223,7 @@ export default function SubscriptionForm() {
                   return (
                     <div
                       key={field.id}
-                      className="rounded-3xl border border-slate-200 bg-slate-50 p-5"
+                      className="rounded-3xl border border-slate-300 bg-slate-50 p-5 ring-1 ring-slate-900/5"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
@@ -311,7 +311,7 @@ export default function SubscriptionForm() {
                           hint={t.form.billers.collectionDateHint}
                         >
                           <select
-                            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-brand-green focus:ring-4 focus:ring-brand-green/15"
+                            className="h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none ring-1 ring-slate-900/5 transition focus:border-brand-green focus:ring-4 focus:ring-brand-green/20"
                             {...register(
                               `billers.${index}.collectionDate` as const,
                               { required: t.form.billers.collectionDateError },
@@ -350,7 +350,7 @@ export default function SubscriptionForm() {
                     {t.form.frequencyOptions.map((option) => (
                       <label
                         key={option.value}
-                        className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 transition ${values.frequency === option.value ? "border-brand-green bg-emerald-50" : "border-slate-200 bg-white"}`}
+                        className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 ring-1 transition ${values.frequency === option.value ? "border-brand-green bg-emerald-50 ring-emerald-200/60" : "border-slate-300 bg-white ring-slate-900/5"}`}
                       >
                         <span className="text-sm font-medium text-slate-700">
                           {option.label}
@@ -369,7 +369,7 @@ export default function SubscriptionForm() {
             )}
 
             {step === 3 && (
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+              <div className="rounded-3xl border border-slate-300 bg-slate-50 p-6 ring-1 ring-slate-900/5">
                 <div className="flex items-start gap-3">
                   <div className="rounded-2xl bg-emerald-100 p-2 text-brand-green">
                     <CheckCircle2 className="h-5 w-5" />
@@ -457,7 +457,7 @@ export default function SubscriptionForm() {
 
       <div id="summary" className="space-y-6">
         <BillSummaryCard values={values} />
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-3xl border border-slate-300 bg-white p-6 shadow-sm shadow-slate-900/5 ring-1 ring-slate-900/5">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-blue">
             {t.form.trustedControls}
           </p>

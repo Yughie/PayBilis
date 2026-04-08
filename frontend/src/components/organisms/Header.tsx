@@ -1,4 +1,5 @@
-import { Menu, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { Menu, ShieldCheck, X } from "lucide-react";
 import logo from "../../../assets/PayBilis Logo.png";
 import NavItem from "../molecules/NavItem";
 import Button from "../atoms/Button";
@@ -6,6 +7,7 @@ import { useLanguage } from "../../lib/i18n";
 
 export default function Header() {
   const { t, toggleLanguage } = useLanguage();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSubscriptionForm = () => {
     document
@@ -14,7 +16,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-slate-300/80 bg-white/85 shadow-sm backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <a href="#top" className="flex items-center gap-3">
           <img
@@ -60,12 +62,62 @@ export default function Header() {
         </div>
 
         <button
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-slate-700 lg:hidden"
+          type="button"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-300 text-slate-700 ring-1 ring-slate-900/5 lg:hidden"
           aria-label={t.header.openMenuLabel}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setMobileMenuOpen((current) => !current)}
         >
-          <Menu className="h-5 w-5" />
+          {mobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </button>
       </div>
+
+      {mobileMenuOpen ? (
+        <div
+          id="mobile-navigation"
+          className="border-t border-slate-200 bg-white/95 px-4 py-4 shadow-lg backdrop-blur-xl lg:hidden sm:px-6"
+        >
+          <nav className="mx-auto flex max-w-7xl flex-col gap-2">
+            <NavItem href="#how-it-works" active>
+              {t.header.howItWorks}
+            </NavItem>
+            <NavItem href="#subscription-form">
+              {t.header.setupSubscription}
+            </NavItem>
+            <NavItem href="#summary">{t.header.summary}</NavItem>
+          </nav>
+
+          <div className="mx-auto mt-4 flex max-w-7xl flex-col gap-3 sm:flex-row">
+            <Button
+              type="button"
+              variant="ghost"
+              size="md"
+              onClick={() => {
+                toggleLanguage();
+                setMobileMenuOpen(false);
+              }}
+            >
+              {t.header.switchTo}
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              onClick={() => {
+                scrollToSubscriptionForm();
+                setMobileMenuOpen(false);
+              }}
+            >
+              {t.header.getStarted}
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </header>
   );
 }
