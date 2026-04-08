@@ -85,3 +85,7 @@ If you deploy the frontend on Render, use these settings:
 Render installs the frontend dependencies automatically for static sites, so `npm install` does not belong in the publish directory or blueprint fields.
 
 The error `Publish directory npm run build does not exist!` means `npm run build` was entered in the publish directory field instead of the build command field.
+
+For the backend, make sure the Render service environment variable `DJANGO_ALLOWED_HOSTS` includes your deployed backend host, for example `paybilis-backend.onrender.com,.onrender.com`. If this variable is set to only `localhost,127.0.0.1`, Django will return `400 Bad Request` for every request on Render.
+
+For production database access, the backend now prefers `DATABASE_URL` when Render provides it. If you are not using a Render-managed database, keep the `SUPABASE_DB_*` variables set on the backend service.

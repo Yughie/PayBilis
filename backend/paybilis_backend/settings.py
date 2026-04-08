@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from urllib.parse import urlparse, unquote
 
 from dotenv import load_dotenv
 
@@ -55,19 +56,37 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'paybilis_backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('SUPABASE_DB_NAME', 'postgres'),
-        'USER': os.getenv('SUPABASE_DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('SUPABASE_DB_PASSWORD', ''),
-        'HOST': os.getenv('SUPABASE_DB_HOST', 'localhost'),
-        'PORT': os.getenv('SUPABASE_DB_PORT', '5432'),
-        'OPTIONS': {
-            'sslmode': os.getenv('SUPABASE_DB_SSLMODE', 'prefer'),
-        },
+database_url = os.getenv('DATABASE_URL')
+
+if database_url:
+    parsed_database_url = urlparse(database_url)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': parsed_database_url.path.lstrip('/'),
+            'USER': unquote(parsed_database_url.username or ''),
+            'PASSWORD': unquote(parsed_database_url.password or ''),
+            'HOST': parsed_database_url.hostname or '',
+            'PORT': parsed_database_url.port or '',
+            'OPTIONS': {
+                'sslmode': 'require' if parsed_database_url.scheme in {'postgres', 'postgresql'} else 'prefer',
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('SUPABASE_DB_NAME', 'postgres'),
+            'USER': os.getenv('SUPABASE_DB_USER', 'postgres'),
+            'PASSWORD': os.getenv('SUPABASE_DB_PASSWORD', ''),
+            'HOST': os.getenv('SUPABASE_DB_HOST', 'localhost'),
+            'PORT': os.getenv('SUPABASE_DB_PORT', '5432'),
+            'OPTIONS': {
+                'sslmode': os.getenv('SUPABASE_DB_SSLMODE', 'prefer'),
+            },
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
