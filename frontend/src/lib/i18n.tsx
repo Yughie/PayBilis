@@ -44,12 +44,18 @@ type Translation = {
     stepFlow: string;
     verifiedAddress: string;
     perBillerDates: string;
+    previewHeadline: string;
+    previewCards: Array<{ label: string; value: string }>;
+    metricCards: Array<{ label: string; value: string }>;
   };
   howItWorks: {
     badge: string;
     title: string;
     description: string;
     cards: Array<{ title: string; description: string }>;
+  };
+  landing: {
+    serviceCards: Array<{ title: string; description: string }>;
   };
   form: {
     eyebrow: string;
@@ -182,6 +188,33 @@ const translations: Record<Language, Translation> = {
       stepFlow: "3-hakbang na flow",
       verifiedAddress: "Beripikadong address",
       perBillerDates: "Petsa kada biller",
+      previewHeadline: "Mas mababang abala, mas mababang gastos sa biyahe.",
+      previewCards: [
+        {
+          label: "Door-to-door na kaginhawaan",
+          value:
+            "Hindi na kailangang pumila o bumiyahe nang malayo para manatiling maayos ang mga bayarin.",
+        },
+        {
+          label: "Serbisyong tipid sa gasolina",
+          value:
+            "Mas kaunting pabalik-balik na biyahe ay ibig sabihin mas mababang gastos sa transportasyon at gasolina.",
+        },
+        {
+          label: "Mas magaan na bayarin sa fee",
+          value:
+            "Dinisenyo para manatiling mas abot-kaya kaysa sa maraming alternatibong opsyon.",
+        },
+        {
+          label: "Simpleng review",
+          value: "Suriin ang bawat bill bago isumite para walang mapalampas.",
+        },
+      ],
+      metricCards: [
+        { label: "Kaginhawaan", value: "Door-to-door na suporta" },
+        { label: "Tipid-gasolina", value: "Mas kaunting biyahe, mas tipid" },
+        { label: "Mababang fee", value: "Abot-kayang recurring service" },
+      ],
     },
     howItWorks: {
       badge: "Paano ito gumagana",
@@ -203,6 +236,25 @@ const translations: Record<Language, Translation> = {
           title: "3. Piliin ang iskedyul",
           description:
             "Itakda ang gusto mong petsa ng koleksyon, tinatayang halaga, at dalas ng subscription.",
+        },
+      ],
+    },
+    landing: {
+      serviceCards: [
+        {
+          title: "Door-to-door na kaginhawaan",
+          description:
+            "Isang gabay na daloy ng subscription sa pagbabayad ng bill na ginawa para sa mga sambahayang mas gusto ang assisted payments at malinaw na iskedyul.",
+        },
+        {
+          title: "Unang inuuna ang tiwala sa onboarding",
+          description:
+            "Binuo ito sa beripikasyon ng address, pagpapatunay ng account, at malinis na review step bago isumite.",
+        },
+        {
+          title: "Mabilis na recurring setup",
+          description:
+            "Sinusuportahan ang one-time at buwanang subscription gamit ang simpleng stepper para manatiling episyente ang proseso.",
         },
       ],
     },
@@ -367,6 +419,31 @@ const translations: Record<Language, Translation> = {
       stepFlow: "3-step flow",
       verifiedAddress: "Verified address",
       perBillerDates: "Per-biller dates",
+      previewHeadline: "Lower effort, lower travel cost.",
+      previewCards: [
+        {
+          label: "Door-to-door convenience",
+          value: "No need to queue or travel far just to keep bills on track.",
+        },
+        {
+          label: "Fuel-saving service",
+          value: "Less back-and-forth means lower transport and fuel expense.",
+        },
+        {
+          label: "Lower fee burden",
+          value:
+            "Designed to stay more affordable than many competing options.",
+        },
+        {
+          label: "Simple review",
+          value: "Check every bill before sending so nothing gets missed.",
+        },
+      ],
+      metricCards: [
+        { label: "Convenience", value: "Door-to-door support" },
+        { label: "Fuel savings", value: "Fewer trips, less spend" },
+        { label: "Lower fees", value: "Affordable recurring service" },
+      ],
     },
     howItWorks: {
       badge: "How it works",
@@ -388,6 +465,25 @@ const translations: Record<Language, Translation> = {
           title: "3. Pick the schedule",
           description:
             "Set your preferred collection date, estimated amount, and subscription frequency.",
+        },
+      ],
+    },
+    landing: {
+      serviceCards: [
+        {
+          title: "Door-to-door convenience",
+          description:
+            "A guided billing subscription flow designed for households that prefer assisted payments and clear scheduling.",
+        },
+        {
+          title: "Trust-first onboarding",
+          description:
+            "Built around address verification, account validation, and a clean review step before submission.",
+        },
+        {
+          title: "Fast recurring setup",
+          description:
+            "Supports one-time and monthly subscriptions with a simple stepper that keeps the process efficient.",
         },
       ],
     },

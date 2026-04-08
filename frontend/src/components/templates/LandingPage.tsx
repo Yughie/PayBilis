@@ -15,35 +15,15 @@ import Badge from "../atoms/Badge";
 import Button from "../atoms/Button";
 import ServiceCard from "../molecules/ServiceCard";
 import SubscriptionForm from "../organisms/SubscriptionForm";
-
-const serviceCards = [
-  {
-    title: "Door-to-door convenience",
-    description:
-      "A guided billing subscription flow designed for households that prefer assisted payments and clear scheduling.",
-    icon: Clock3,
-  },
-  {
-    title: "Trust-first onboarding",
-    description:
-      "Built around address verification, account validation, and a clean review step before submission.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Fast recurring setup",
-    description:
-      "Supports one-time and monthly subscriptions with a simple stepper that keeps the process efficient.",
-    icon: Zap,
-  },
-];
+import { useLanguage } from "../../lib/i18n";
 
 const contactChannels = [
   {
     title: "Facebook",
     description:
       "Send us a message on Facebook for the fastest response and follow-up.",
-    value: "https://www.facebook.com/ymperez12/",
-    href: "https://www.facebook.com/ymperez12/",
+    value: "https://www.facebook.com/profile.php?PayBilis",
+    href: "https://www.facebook.com/profile.php?id=61574253067228",
     icon: Facebook,
   },
   {
@@ -56,6 +36,13 @@ const contactChannels = [
 ];
 
 export default function LandingPage() {
+  const { t } = useLanguage();
+
+  const serviceCards = t.landing.serviceCards.map((card, index) => ({
+    ...card,
+    icon: [Clock3, ShieldCheck, Zap][index] ?? Zap,
+  }));
+
   const scrollToSubscriptionForm = () => {
     document
       .getElementById("subscription-form")
@@ -93,22 +80,20 @@ export default function LandingPage() {
                       PayBilis
                     </p>
                     <p className="mt-1 text-sm font-medium text-white/90">
-                      Reliable bill setup
+                      {t.hero.badge}
                     </p>
                   </div>
                 </div>
                 <Badge className="w-fit bg-white/10 text-white sm:self-center">
-                  Simple bill setup
+                  {t.hero.fastSetup}
                 </Badge>
               </div>
             </div>
             <h1 className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-              A simple way to set up bill payments.
+              {t.hero.title}
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200">
-              PayBilis helps households and small businesses set up recurring
-              bill payments quickly, clearly, and with easy review before
-              submission.
+              {t.hero.description}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button
@@ -117,7 +102,8 @@ export default function LandingPage() {
                 size="lg"
                 onClick={scrollToSubscriptionForm}
               >
-                Setup Subscription <ArrowRight className="ml-2 h-4 w-4" />
+                {t.hero.setupSubscription}{" "}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button
                 type="button"
@@ -126,23 +112,14 @@ export default function LandingPage() {
                 className="border border-white/25 bg-white/5 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.08)] hover:bg-white/10"
                 onClick={scrollToHowItWorks}
               >
-                Explore How It Works
+                {t.hero.exploreHowItWorks}
               </Button>
             </div>
             <div className="mt-8 grid max-w-2xl gap-4 sm:grid-cols-3">
               {[
-                [
-                  "Verified address",
-                  "We confirm the service location before activation.",
-                ],
-                [
-                  "Simple setup",
-                  "Follow a short guided flow to add each biller.",
-                ],
-                [
-                  "Final review",
-                  "Check all details before the subscription is submitted.",
-                ],
+                [t.hero.verifiedAddress, t.hero.verifiedDescription],
+                [t.hero.fastSetup, t.hero.fastDescription],
+                [t.hero.verifiedFlow, t.hero.secureDescription],
               ].map(([title, text]) => (
                 <div
                   key={title}
@@ -168,10 +145,10 @@ export default function LandingPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-xs uppercase tracking-[0.22em] text-emerald-300">
-                        PayBilis preview
+                        {t.hero.dashboardSubtitle}
                       </p>
                       <h2 className="mt-2 text-2xl font-semibold">
-                        Lower effort, lower travel cost.
+                        {t.hero.previewHeadline}
                       </h2>
                     </div>
                     <div className="rounded-2xl bg-emerald-400/15 p-3 text-emerald-200">
@@ -180,28 +157,7 @@ export default function LandingPage() {
                   </div>
 
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    {[
-                      {
-                        label: "Door-to-door convenience",
-                        value:
-                          "No need to queue or travel far just to keep bills on track.",
-                      },
-                      {
-                        label: "Fuel-saving service",
-                        value:
-                          "Less back-and-forth means lower transport and fuel expense.",
-                      },
-                      {
-                        label: "Lower fee burden",
-                        value:
-                          "Designed to stay more affordable than many competing options.",
-                      },
-                      {
-                        label: "Simple review",
-                        value:
-                          "Check every bill before sending so nothing gets missed.",
-                      },
-                    ].map((item) => (
+                    {t.hero.previewCards.map((item) => (
                       <div
                         key={item.label}
                         className="rounded-2xl border border-white/20 bg-white/7 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
@@ -218,36 +174,26 @@ export default function LandingPage() {
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-3">
-                  {[
-                    {
-                      label: "Convenience",
-                      value: "Door-to-door support",
-                      icon: CheckCircle2,
-                    },
-                    {
-                      label: "Fuel savings",
-                      value: "Fewer trips, less spend",
-                      icon: ShieldCheck,
-                    },
-                    {
-                      label: "Lower fees",
-                      value: "Affordable recurring service",
-                      icon: Clock3,
-                    },
-                  ].map(({ label, value, icon: Icon }) => (
-                    <div
-                      key={label}
-                      className="rounded-2xl border border-white/20 bg-white/7 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
-                    >
-                      <Icon className="h-5 w-5 text-emerald-300" />
-                      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-slate-300">
-                        {label}
-                      </p>
-                      <p className="mt-2 text-base font-semibold text-white">
-                        {value}
-                      </p>
-                    </div>
-                  ))}
+                  {t.hero.metricCards
+                    .map((item, index) => ({
+                      ...item,
+                      icon:
+                        [CheckCircle2, ShieldCheck, Clock3][index] ?? Clock3,
+                    }))
+                    .map(({ label, value, icon: Icon }) => (
+                      <div
+                        key={label}
+                        className="rounded-2xl border border-white/20 bg-white/7 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+                      >
+                        <Icon className="h-5 w-5 text-emerald-300" />
+                        <p className="mt-3 text-xs uppercase tracking-[0.2em] text-slate-300">
+                          {label}
+                        </p>
+                        <p className="mt-2 text-base font-semibold text-white">
+                          {value}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>
@@ -260,30 +206,29 @@ export default function LandingPage() {
         className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
       >
         <div className="max-w-2xl">
-          <Badge>How it works</Badge>
+          <Badge>{t.howItWorks.badge}</Badge>
           <h2 className="mt-4 text-3xl font-semibold text-slate-950 sm:text-4xl">
-            Made to be easy to follow.
+            {t.howItWorks.title}
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-600">
-            The flow is broken into clear steps so users can enter their
-            details, add billers, and choose collection dates without confusion.
+            {t.howItWorks.description}
           </p>
         </div>
 
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           <ServiceCard
-            title="1. Enter your details"
-            description="Add your name, contact number, and home address to begin."
+            title={t.howItWorks.cards[0].title}
+            description={t.howItWorks.cards[0].description}
             icon={BadgeCheck}
           />
           <ServiceCard
-            title="2. Add bill information"
-            description="Enter the biller name, account number, and account name."
+            title={t.howItWorks.cards[1].title}
+            description={t.howItWorks.cards[1].description}
             icon={BrainCircuit}
           />
           <ServiceCard
-            title="3. Choose a schedule"
-            description="Set the collection date, estimated amount, and payment frequency."
+            title={t.howItWorks.cards[2].title}
+            description={t.howItWorks.cards[2].description}
             icon={Zap}
           />
         </div>
@@ -313,20 +258,20 @@ export default function LandingPage() {
                   href={href}
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noreferrer" : undefined}
-                  className="group rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-green hover:shadow-md"
+                  className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-green hover:shadow-md sm:p-5"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-2xl bg-emerald-100 p-3 text-brand-green transition group-hover:bg-brand-green group-hover:text-white">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                    <div className="w-fit rounded-2xl bg-emerald-100 p-3 text-brand-green transition group-hover:bg-brand-green group-hover:text-white">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-green">
                         {title}
                       </p>
-                      <p className="mt-2 text-base font-semibold text-slate-950">
+                      <p className="mt-2 break-all text-base font-semibold leading-6 text-slate-950 sm:break-normal">
                         {value}
                       </p>
-                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                      <p className="mt-2 break-words text-sm leading-6 text-slate-600">
                         {description}
                       </p>
                     </div>
