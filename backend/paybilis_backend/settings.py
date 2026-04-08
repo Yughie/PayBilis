@@ -9,23 +9,15 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-def _env_bool(name: str, default: bool) -> bool:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
-
-
-def _env_list(name: str, default: str = '') -> list[str]:
-    raw = os.getenv(name, default)
-    return [item.strip() for item in raw.split(',') if item.strip()]
-
-
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-paybilis-dev-key')
-DEBUG = _env_bool('DJANGO_DEBUG', True)
+DEBUG = os.getenv('DJANGO_DEBUG', 'true').lower() == 'true'
 
-ALLOWED_HOSTS = _env_list('DJANGO_ALLOWED_HOSTS',
-                          'localhost,127.0.0.1,.onrender.com')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'paybilis-backend.onrender.com',
+    '.onrender.com',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -40,8 +32,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -116,21 +108,17 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = _env_bool('CORS_ALLOW_ALL_ORIGINS', DEBUG)
-CORS_ALLOWED_ORIGINS = _env_list(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:5173,https://paybilis.onrender.com'
-)
-CORS_ALLOWED_ORIGIN_REGEXES = _env_list(
-    'CORS_ALLOWED_ORIGIN_REGEXES',
-    r'^https://.*\.onrender\.com$'
-)
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'https://paybilis.onrender.com',
+]
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 
-CSRF_TRUSTED_ORIGINS = _env_list(
-    'CSRF_TRUSTED_ORIGINS',
-    'http://localhost:5173,https://paybilis.onrender.com'
-)
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'https://paybilis.onrender.com',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
