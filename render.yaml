@@ -1,3 +1,8 @@
+databases:
+  - name: paybilis-db
+    databaseName: paybilis
+    user: paybilis
+
 services:
   - type: web
     name: paybilis-frontend
@@ -20,10 +25,15 @@ services:
     buildCommand: pip install -r requirements.txt
     preDeployCommand: python manage.py migrate
     startCommand: gunicorn paybilis_backend.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /health-check/
     envVars:
       - key: DJANGO_DEBUG
         value: "false"
       - key: DJANGO_SECRET_KEY
         generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: paybilis-backend.onrender.com,.onrender.com
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: paybilis-db
+          property: connectionString
