@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from urllib.parse import urlparse, unquote
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -109,13 +110,19 @@ if database_url:
         }
     }
 else:
+    supabase_db_host = os.getenv('SUPABASE_DB_HOST')
+    if not supabase_db_host and not DEBUG:
+        raise ImproperlyConfigured(
+            'Production database is not configured. Set DATABASE_URL or SUPABASE_DB_* environment variables.'
+        )
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('SUPABASE_DB_NAME', 'postgres'),
             'USER': os.getenv('SUPABASE_DB_USER', 'postgres'),
             'PASSWORD': os.getenv('SUPABASE_DB_PASSWORD', ''),
-            'HOST': os.getenv('SUPABASE_DB_HOST', 'localhost'),
+            'HOST': supabase_db_host or 'localhost',
             'PORT': os.getenv('SUPABASE_DB_PORT', '5432'),
             'OPTIONS': {
                 'sslmode': os.getenv('SUPABASE_DB_SSLMODE', 'prefer'),
