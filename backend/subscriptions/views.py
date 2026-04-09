@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.db import connections
+from django.db import IntegrityError
 from django.db.utils import OperationalError, ProgrammingError
 from rest_framework import status, views
 from rest_framework.response import Response
@@ -12,8 +13,33 @@ class SubscriptionCreateView(views.APIView):
     def post(self, request):
         serializer = SubscriptionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        subscription = serializer.save()
-        return Response(SubscriptionSerializer(subscription).data, status=status.HTTP_201_CREATED)
+        try:
+            subscription = serializer.save()
+            return Response(SubscriptionSerializer(subscription).data, status=status.HTTP_201_CREATED)
+        except (OperationalError, ProgrammingError):
+            return Response(
+                {
+                    'detail': 'Database is not ready. Please try again in a few minutes.',
+                    'code': 'database_unavailable',
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        except IntegrityError:
+            return Response(
+                {
+                    'detail': 'Unable to save subscription due to invalid data.',
+                    'code': 'integrity_error',
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception:
+            return Response(
+                {
+                    'detail': 'Unexpected server error while creating subscription.',
+                    'code': 'unexpected_error',
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
 
 class HealthCheckView(views.APIView):

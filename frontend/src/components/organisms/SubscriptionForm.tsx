@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import logo from "../../../assets/PayBilis Logo.png";
 import Button from "../atoms/Button";
 import Input from "../atoms/Input";
 import Label from "../atoms/Label";
@@ -52,10 +53,14 @@ export default function SubscriptionForm() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const FACEBOOK_PAGE_URL =
+    "https://www.facebook.com/profile.php?id=61574253067228";
+
   const {
     control,
     register,
     handleSubmit,
+    reset,
     trigger,
     watch,
     formState: { errors, isSubmitting },
@@ -96,8 +101,18 @@ export default function SubscriptionForm() {
 
   const onSubmit = handleSubmit(async (formValues) => {
     setSubmitError(null);
-    await createSubscription(formValues);
-    setSubmitted(true);
+    try {
+      await createSubscription(formValues);
+      reset(defaultValues);
+      setStep(0);
+      setSubmitted(true);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unable to submit subscription.";
+      setSubmitError(message);
+    }
   });
 
   const addBiller = () => {
@@ -108,6 +123,10 @@ export default function SubscriptionForm() {
       estimatedAmount: "",
       collectionDate: "",
     });
+  };
+
+  const closeConfirmationModal = () => {
+    setSubmitted(false);
   };
 
   return (
@@ -441,18 +460,69 @@ export default function SubscriptionForm() {
             </div>
           </form>
         ) : (
-          <div className="mt-8 rounded-3xl border border-emerald-200 bg-emerald-50 p-6">
-            <div className="flex items-start gap-3">
-              <div className="rounded-2xl bg-white p-2 text-brand-green shadow-sm">
-                <CheckCircle2 className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-slate-900">
-                  {t.form.submittedTitle}
-                </h3>
-                <p className="mt-1 text-sm text-slate-700">
-                  {t.form.submittedDescription}
-                </p>
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t.form.submittedTitle}
+            onClick={closeConfirmationModal}
+          >
+            <div
+              className="w-full max-w-lg overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="h-1.5 w-full bg-gradient-to-r from-brand-blue via-emerald-500 to-brand-green" />
+              <div className="p-6 sm:p-7">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center">
+                        <img
+                          src={logo}
+                          alt="PayBilis logo"
+                          className="h-30 w-50 rounded-2xl bg-white object-contain p-2 ring-1 ring-slate-200"
+                        />
+                      </div>
+                      <h3 className="mt-3 text-2xl font-semibold text-slate-900">
+                        {t.form.submittedTitle}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {t.form.submittedDescription}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Stay updated
+                  </p>
+                  <a
+                    href={FACEBOOK_PAGE_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-flex items-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-brand-blue ring-1 ring-slate-200 transition hover:text-brand-green hover:ring-brand-green/40"
+                  >
+                    Facebook: PayBilis
+                  </a>
+                </div>
+
+                <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={closeConfirmationModal}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => window.open(FACEBOOK_PAGE_URL, "_blank")}
+                  >
+                    Open Facebook Page
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

@@ -1,8 +1,5 @@
 import {
   ArrowRight,
-  BadgeCheck,
-  BrainCircuit,
-  CheckCircle2,
   Clock3,
   Facebook,
   Phone,
@@ -115,23 +112,6 @@ export default function LandingPage() {
                 {t.hero.exploreHowItWorks}
               </Button>
             </div>
-            <div className="mt-8 grid max-w-2xl gap-4 sm:grid-cols-3">
-              {[
-                [t.hero.verifiedAddress, t.hero.verifiedDescription],
-                [t.hero.fastSetup, t.hero.fastDescription],
-                [t.hero.verifiedFlow, t.hero.secureDescription],
-              ].map(([title, text]) => (
-                <div
-                  key={title}
-                  className="rounded-2xl border border-white/20 bg-white/8 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.08)] backdrop-blur"
-                >
-                  <p className="text-sm font-semibold text-emerald-300">
-                    {title}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-200">{text}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="relative">
@@ -141,99 +121,71 @@ export default function LandingPage() {
               <div className="absolute left-0 bottom-0 h-44 w-44 rounded-full bg-sky-400/20 blur-3xl" />
 
               <div className="relative grid gap-4">
-                <div className="rounded-[1.5rem] border border-white/20 bg-slate-950/35 p-5 shadow-lg shadow-black/20">
+                <div
+                  id="how-it-works"
+                  className="rounded-[1.5rem] border border-white/20 bg-slate-950/35 p-5 shadow-lg shadow-black/20"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-xs uppercase tracking-[0.22em] text-emerald-300">
-                        {t.hero.dashboardSubtitle}
+                        {t.howItWorks.badge}
                       </p>
-                      <h2 className="mt-2 text-2xl font-semibold">
-                        {t.hero.previewHeadline}
-                      </h2>
+                      <h2 className="mt-2 text-2xl font-semibold">PayBilis</h2>
                     </div>
                     <div className="rounded-2xl bg-emerald-400/15 p-3 text-emerald-200">
                       <Sparkles className="h-5 w-5" />
                     </div>
                   </div>
 
-                  <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    {t.hero.previewCards.map((item) => (
+                  <div className="mt-5 space-y-3">
+                    {t.howItWorks.cards.map((card, index) => (
                       <div
-                        key={item.label}
-                        className="rounded-2xl border border-white/20 bg-white/7 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+                        key={card.title}
+                        className="rounded-2xl border border-white/20 bg-white/8 p-4"
                       >
-                        <p className="text-sm font-semibold text-emerald-200">
-                          {item.label}
-                        </p>
-                        <p className="mt-2 text-sm leading-6 text-slate-200">
-                          {item.value}
-                        </p>
+                        <div className="flex items-start gap-3">
+                          <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-400/20 text-xs font-semibold text-emerald-200">
+                            {index + 1}
+                          </span>
+                          <div>
+                            <p className="text-sm font-semibold text-white">
+                              {card.title}
+                            </p>
+                            <p className="mt-1 text-xs leading-5 text-slate-200">
+                              {card.description}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-3">
-                  {t.hero.metricCards
-                    .map((item, index) => ({
-                      ...item,
-                      icon:
-                        [CheckCircle2, ShieldCheck, Clock3][index] ?? Clock3,
-                    }))
-                    .map(({ label, value, icon: Icon }) => (
-                      <div
-                        key={label}
-                        className="rounded-2xl border border-white/20 bg-white/7 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
-                      >
-                        <Icon className="h-5 w-5 text-emerald-300" />
-                        <p className="mt-3 text-xs uppercase tracking-[0.2em] text-slate-300">
-                          {label}
-                        </p>
-                        <p className="mt-2 text-base font-semibold text-white">
-                          {value}
-                        </p>
-                      </div>
-                    ))}
+                  {[
+                    [t.hero.verifiedAddress, t.hero.verifiedDescription],
+                    [t.hero.fastSetup, t.hero.fastDescription],
+                    [t.hero.verifiedFlow, t.hero.secureDescription],
+                  ].map(([title, text]) => (
+                    <div
+                      key={title}
+                      className="rounded-2xl border border-white/20 bg-white/8 p-4"
+                    >
+                      <p className="text-sm font-semibold text-emerald-300">
+                        {title}
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-slate-200">
+                        {text}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      <section
-        id="how-it-works"
-        className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
-      >
-        <div className="max-w-2xl">
-          <Badge>{t.howItWorks.badge}</Badge>
-          <h2 className="mt-4 text-3xl font-semibold text-slate-950 sm:text-4xl">
-            {t.howItWorks.title}
-          </h2>
-          <p className="mt-4 text-base leading-7 text-slate-600">
-            {t.howItWorks.description}
-          </p>
-        </div>
-
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          <ServiceCard
-            title={t.howItWorks.cards[0].title}
-            description={t.howItWorks.cards[0].description}
-            icon={BadgeCheck}
-          />
-          <ServiceCard
-            title={t.howItWorks.cards[1].title}
-            description={t.howItWorks.cards[1].description}
-            icon={BrainCircuit}
-          />
-          <ServiceCard
-            title={t.howItWorks.cards[2].title}
-            description={t.howItWorks.cards[2].description}
-            icon={Zap}
-          />
-        </div>
-      </section>
-
+      <SubscriptionForm />
       <section
         id="contact"
         className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8"
@@ -282,8 +234,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      <SubscriptionForm />
 
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
         <div className="grid gap-5 md:grid-cols-3">

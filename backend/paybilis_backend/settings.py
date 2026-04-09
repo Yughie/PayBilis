@@ -9,15 +9,45 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def parse_origin_list(env_key, default):
+    raw_value = os.getenv(env_key)
+    if not raw_value:
+        return default
+    return [origin.strip() for origin in raw_value.split(',') if origin.strip()]
+
+
+def parse_allowed_hosts(default):
+    raw_value = os.getenv('DJANGO_ALLOWED_HOSTS')
+    if not raw_value:
+        return default
+
+    hosts = []
+    for value in raw_value.split(','):
+        candidate = value.strip()
+        if not candidate:
+            continue
+
+        # Accept values with or without scheme and keep only hostname for Django.
+        if '://' in candidate:
+            parsed = urlparse(candidate)
+            candidate = parsed.hostname or ''
+
+        candidate = candidate.split('/')[0].strip()
+        if candidate:
+            hosts.append(candidate)
+
+    return hosts or default
+
+
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-paybilis-dev-key')
 DEBUG = os.getenv('DJANGO_DEBUG', 'true').lower() == 'true'
 
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS = parse_allowed_hosts([
     'localhost',
     '127.0.0.1',
     'paybilis-backend.onrender.com',
     '.onrender.com',
-]
+])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -109,16 +139,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = parse_origin_list('CORS_ALLOWED_ORIGINS', [
     'http://localhost:5173',
     'https://paybilis.onrender.com',
-]
+    'https://paybilis-frontend.onrender.com',
+])
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 
-CSRF_TRUSTED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = parse_origin_list('CSRF_TRUSTED_ORIGINS', [
     'http://localhost:5173',
     'https://paybilis.onrender.com',
-]
+    'https://paybilis-frontend.onrender.com',
+])
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
