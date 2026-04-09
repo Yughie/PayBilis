@@ -3,13 +3,20 @@ import type { SubscriptionValues } from '../types';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 export async function createSubscription(payload: SubscriptionValues) {
-  const response = await fetch(`${API_BASE_URL}/api/subscriptions/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/subscriptions/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    throw new Error(
+      'Unable to reach the server. Please try again in a few minutes.',
+    );
+  }
 
   if (!response.ok) {
     const responseText = await response.text();
@@ -33,4 +40,39 @@ export async function createSubscription(payload: SubscriptionValues) {
   }
 
   return response.json();
+}
+
+export async function askAI(message: string): Promise<string> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/ai/chat/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    });
+  } catch {
+    throw new Error(
+      'Unable to reach the AI service. Please try again in a few minutes.',
+    );
+  }
+
+  const payload = (await response.json().catch(() => null)) as
+    | { answer?: string; detail?: string; message?: string }
+    | null;
+
+  if (!response.ok) {
+    const errorMessage =
+      payload?.detail ||
+      payload?.message ||
+      'Unable to get response from AI assistant.';
+    throw new Error(errorMessage);
+  }
+
+  if (!payload?.answer) {
+    throw new Error('AI assistant returned an empty response.');
+  }
+
+  return payload.answer;
 }

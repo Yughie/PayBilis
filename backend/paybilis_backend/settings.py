@@ -17,6 +17,16 @@ def parse_origin_list(env_key, default):
     return [origin.strip() for origin in raw_value.split(',') if origin.strip()]
 
 
+def merge_origin_lists(*origin_lists):
+    merged = []
+    for origins in origin_lists:
+        for origin in origins:
+            value = origin.strip()
+            if value and value not in merged:
+                merged.append(value)
+    return merged
+
+
 def parse_allowed_hosts(default):
     raw_value = os.getenv('DJANGO_ALLOWED_HOSTS')
     if not raw_value:
@@ -146,18 +156,23 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = parse_origin_list('CORS_ALLOWED_ORIGINS', [
+DEFAULT_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'https://paybilis.onrender.com',
     'https://paybilis-frontend.onrender.com',
-])
+]
+CORS_ALLOWED_ORIGINS = merge_origin_lists(
+    DEFAULT_ALLOWED_ORIGINS,
+    parse_origin_list('CORS_ALLOWED_ORIGINS', []),
+)
+# Keep Render preview/alternate static domains working without per-deploy env edits.
+CORS_ALLOWED_ORIGIN_REGEXES = [r'^https://.*\.onrender\.com$']
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 
-CSRF_TRUSTED_ORIGINS = parse_origin_list('CSRF_TRUSTED_ORIGINS', [
-    'http://localhost:5173',
-    'https://paybilis.onrender.com',
-    'https://paybilis-frontend.onrender.com',
-])
+CSRF_TRUSTED_ORIGINS = merge_origin_lists(
+    DEFAULT_ALLOWED_ORIGINS,
+    parse_origin_list('CSRF_TRUSTED_ORIGINS', []),
+)
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],

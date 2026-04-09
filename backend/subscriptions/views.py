@@ -3,13 +3,14 @@ import logging
 from django.utils import timezone
 from django.db import connections
 from django.db import IntegrityError
+from django.db import DatabaseError
 from django.db.utils import OperationalError, ProgrammingError
 from rest_framework import status, views
 from rest_framework.response import Response
 
 from .models import Subscription
 from .serializers import SubscriptionSerializer
-from .services.chatbot import build_chat_chain, load_faq_context
+from .services.chatbot import build_chat_chain, clean_answer_text, load_faq_context
 
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ class SubscriptionCreateView(views.APIView):
         try:
             subscription = serializer.save()
             return Response(SubscriptionSerializer(subscription).data, status=status.HTTP_201_CREATED)
-        except (OperationalError, ProgrammingError):
+        except (OperationalError, ProgrammingError, DatabaseError):
             logger.exception(
                 'Database is unavailable while creating subscription.')
             return Response(
@@ -65,7 +66,7 @@ class HealthCheckView(views.APIView):
             with connections['default'].cursor() as cursor:
                 cursor.execute('SELECT 1')
             Subscription.objects.exists()
-        except (OperationalError, ProgrammingError):
+        except (OperationalError, ProgrammingError, DatabaseError):
             logger.exception('Health check failed: database unavailable.')
             overall_status = 'degraded'
             db_status = 'error'
@@ -100,13 +101,23 @@ class AIChatView(views.APIView):
 
         try:
             faq_context = load_faq_context()
+            if not faq_context:
+                return Response(
+                    {
+                        'detail': 'FAQ knowledge base is empty or not found. Configure FAQ_KB_PATH or add content to backend/rag/faq_knowledge_base.txt.',
+                        'code': 'faq_not_configured',
+                    },
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+
             chain = build_chat_chain()
             answer = chain.invoke(
                 {
-                    'faq_context': faq_context or 'No FAQ content configured yet.',
+                    'faq_context': faq_context,
                     'question': question,
                 }
             )
+            answer = clean_answer_text(answer)
 
             return Response(
                 {
