@@ -105,10 +105,14 @@ database_url = os.getenv('DATABASE_URL')
 
 if database_url:
     parsed_database_url = urlparse(database_url)
+    database_name = unquote(parsed_database_url.path.lstrip('/'))
+    if not database_name:
+        database_name = os.getenv('SUPABASE_DB_NAME', 'postgres')
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': parsed_database_url.path.lstrip('/'),
+            'NAME': database_name,
             'USER': unquote(parsed_database_url.username or ''),
             'PASSWORD': unquote(parsed_database_url.password or ''),
             'HOST': parsed_database_url.hostname or '',

@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.utils import timezone
 from django.db import connections
 from django.db import IntegrityError
@@ -40,13 +41,17 @@ class SubscriptionCreateView(views.APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except Exception:
+        except Exception as exc:
             logger.exception(
                 'Unexpected server error while creating subscription.')
+            error_type = exc.__class__.__name__
+            debug_error = str(exc).strip() if settings.DEBUG else ''
             return Response(
                 {
                     'detail': 'Unexpected server error while creating subscription.',
                     'code': 'unexpected_error',
+                    'error_type': error_type,
+                    **({'error': debug_error} if debug_error else {}),
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
@@ -70,6 +75,22 @@ class HealthCheckView(views.APIView):
             overall_status = 'degraded'
             db_status = 'error'
             status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        except Exception as exc:
+            logger.exception('Health check failed: unexpected server error.')
+            overall_status = 'degraded'
+            db_status = 'error'
+            status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+            return Response(
+                {
+                    'status': overall_status,
+                    'service': 'paybilis-backend',
+                    'database': db_status,
+                    'code': 'health_check_unexpected_error',
+                    'error_type': exc.__class__.__name__,
+                    'timestamp': timezone.now().isoformat(),
+                },
+                status=status_code,
+            )
 
         return Response(
             {
