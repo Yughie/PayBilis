@@ -10,7 +10,6 @@ from rest_framework.response import Response
 
 from .models import Subscription
 from .serializers import SubscriptionSerializer
-from .services.chatbot import build_chat_chain, clean_answer_text, load_faq_context
 
 
 logger = logging.getLogger(__name__)
@@ -88,6 +87,18 @@ class AIChatView(views.APIView):
     permission_classes = []
 
     def post(self, request):
+        try:
+            from .services.chatbot import build_chat_chain, clean_answer_text, load_faq_context
+        except Exception:
+            logger.exception('AI dependencies failed to load.')
+            return Response(
+                {
+                    'detail': 'AI service dependencies are unavailable on the server.',
+                    'code': 'ai_dependencies_unavailable',
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
         question = (request.data.get('message') or '').strip()
 
         if not question:
